@@ -1,0 +1,41 @@
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f6f7fb;
+  color: #1f2937;
+}
+
+.main-layout,
+.auth-layout {
+  min-height: 100vh;
+}
+
+.navbar,
+.footer {
+  padding: 1rem 1.5rem;
+  background: #111827;
+  color: #fff;
+}
+
+.sidebar {
+  padding: 1rem 1.5rem;
+  background: #fff;
+}
+
+.widget,
+.card-list__item,
+.confirm-dialog,
+.loading-spinner {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
