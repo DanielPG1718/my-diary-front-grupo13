@@ -1,3 +1,8 @@
+import { AuthGuard } from '../core/guards/AuthGuard'
+import { RegisterPage } from '../features/auth/pages/RegisterPage'
+import { ForgotPasswordPage } from '../features/auth/pages/ForgotPasswordPage'
+import { ProfilePage } from '../features/profile/pages/ProfilePage'
+import { ProfileEditPage } from '../features/profile/pages/ProfileEditPage'
 import { MainLayout } from '../layouts/MainLayout'
 import { AuthLayout } from '../layouts/AuthLayout'
 import { WelcomePage } from '../features/home/pages/WelcomePage'
@@ -23,6 +28,32 @@ export function AppRoutes() {
       <AuthLayout>
         <LoginPage />
       </AuthLayout>
+    )
+  }
+
+  if (path === '/register') {
+    return (
+      <AuthLayout>
+        <RegisterPage />
+      </AuthLayout>
+    )
+  }
+
+  if (path === '/forgot-password') {
+    return (
+      <AuthLayout>
+        <ForgotPasswordPage />
+      </AuthLayout>
+    )
+  }
+
+  if (path === '/profile' || path === '/profile/edit') {
+    return (
+      <MainLayout>
+        <AuthGuard>
+          {path === '/profile' ? <ProfilePage /> : <ProfileEditPage />}
+        </AuthGuard>
+      </MainLayout>
     )
   }
 
