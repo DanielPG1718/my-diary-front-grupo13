@@ -36,6 +36,16 @@ export function DiaryDetailPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  const locationValue = entry?.location ?? "";
+  let nombrePais = locationValue;
+  let urlIcono = "";
+
+  if (locationValue.includes("|")) {
+    const partesLocation = locationValue.split("|");
+    nombrePais = partesLocation[0] ?? "";
+    urlIcono = partesLocation[1] ?? "";
+  }
+
   useEffect(() => {
     const loadDiary = async () => {
       if (!diaryId) {
@@ -150,7 +160,17 @@ export function DiaryDetailPage() {
                   <span className="font-semibold text-slate-800">Actualizada</span>
                   <span className="text-right">{formatDate(entry.updatedAt)}</span>
                 </p>
-
+                <p className="flex items-start justify-between gap-3">
+                  <span className="font-semibold text-slate-800">Lugar</span>
+                  {urlIcono ? (
+                    <img
+                      src={urlIcono}
+                      alt={`Bandera de ${nombrePais}`}
+                      className="h-6 w-9 rounded-sm object-cover"
+                    />
+                  ) : null}
+                  <span className="text-right">{nombrePais ?? 'No especificado'}</span>
+                </p>
 
               </div>
             </section>
