@@ -1,3 +1,4 @@
+import { CurrencyWidget } from '../components/CurrencyWidget'
 import { useEffect, useState } from 'react'
 import { UiIcon } from '../../../shared/components/UiIcon'
 import { handleError } from '../../../core/interceptors/error.interceptor'
@@ -29,7 +30,7 @@ export function DashboardPage() {
   return (
     <section className="page page--dashboard">
       <div>
-        <div className="content-grid" style={{ gridTemplateColumns: 'minmax(0, 1fr)' }}>
+        <div className="content-grid">
           <article className="panel panel--notes panel-historial-reciente">
             <h1>Bienvenido</h1>
             <div className="panel__header">
@@ -59,6 +60,9 @@ export function DashboardPage() {
               <img className='object-cover' src='/image.png' />
             </div>
           </article>
+          <aside className='space-y-6'>
+            <CurrencyWidget />
+          </aside>
 
         </div>
       </div>
