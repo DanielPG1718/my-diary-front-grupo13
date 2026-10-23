@@ -1,3 +1,4 @@
+import { formatDate as formatPeruDate, parseUtcDate } from '../../../shared/utils/date.util'
 import { useEffect, useMemo, useState } from 'react'
 import { UiIcon } from '../../../shared/components/UiIcon'
 import { handleError } from '../../../core/interceptors/error.interceptor'
@@ -5,11 +6,11 @@ import { diaryService } from '../services/diary.service'
 import type { DiaryResponse } from '../models/diary.response'
 
 const formatDate = (value: string) =>
-  new Intl.DateTimeFormat('es-PE', {
+  formatPeruDate(value, {
     day: '2-digit',
     month: 'long',
     year: 'numeric',
-  }).format(new Date(value))
+  })
 
 const parseTags = (tags?: string | null) =>
   (tags ?? '')
@@ -40,7 +41,7 @@ export function DiaryListPage() {
   const latestEntryDate = useMemo(() => {
     if (!entries.length) return 'Sin registros recientes'
     const latest = [...entries].sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      (a, b) => parseUtcDate(b.createdAt).getTime() - parseUtcDate(a.createdAt).getTime(),
     )[0]
     return formatDate(latest.createdAt)
   }, [entries])

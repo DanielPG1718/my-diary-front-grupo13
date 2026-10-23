@@ -1,3 +1,4 @@
+import { formatDate as formatPeruDate } from '../../../shared/utils/date.util'
 import { useEffect, useState } from 'react'
 import { UiIcon } from '../../../shared/components/UiIcon'
 import { handleError } from '../../../core/interceptors/error.interceptor'
@@ -11,13 +12,13 @@ const getDiaryIdFromUrl = () => {
 }
 
 const formatDate = (value: string) =>
-  new Intl.DateTimeFormat('es-PE', {
+  formatPeruDate(value, {
     day: '2-digit',
     month: 'long',
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-  }).format(new Date(value))
+  })
 
 const parseTags = (tags?: string | null) =>
   (tags ?? '')
