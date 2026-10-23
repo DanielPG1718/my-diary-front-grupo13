@@ -1,3 +1,4 @@
+import { WeatherWidget } from '../../weather/components/WeatherWidget'
 import { CurrencyWidget } from '../components/CurrencyWidget'
 import { useEffect, useState } from 'react'
 import { UiIcon } from '../../../shared/components/UiIcon'
@@ -61,6 +62,7 @@ export function DashboardPage() {
             </div>
           </article>
           <aside className='space-y-6'>
+            <WeatherWidget />
             <CurrencyWidget />
           </aside>
 
