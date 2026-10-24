@@ -1,18 +1,19 @@
+import { getFlagUrl } from '../../currency/util/currencyFlags'
 import Select from 'react-select'
 
 const customSelectStyles = {
   control: (base: any) => ({
     ...base,
-    borderRadius: '9999px',
-    border: 'none',
-    backgroundColor: '#f3f4f6',
+    borderRadius: '14px',
+    border: '1px solid #e8e8f2',
+    backgroundColor: '#fafafe',
     boxShadow: 'none',
     padding: '4px 8px',
     minHeight: '48px',
   }),
   dropdownIndicator: (base: any) => ({
     ...base,
-    color: '#6b7280',
+    color: '#77769a',
   }),
   indicatorSeparator: () => ({
     display: 'none',
@@ -33,10 +34,11 @@ type Props = {
 
 export function CurrencySelect({ label, value, onChange, options }: Props) {
   return (
-    <div className="flex-1">
-      <label className="text-sm text-gray-500">{label}</label>
+    <div className="currency-select">
+      <span className="studio-field-label">{label}</span>
 
       <Select
+        aria-label={label === 'De' ? 'Moneda de origen' : 'Moneda de destino'}
         styles={customSelectStyles}
         options={options}
         value={value}
@@ -44,7 +46,7 @@ export function CurrencySelect({ label, value, onChange, options }: Props) {
         className="mt-1"
         formatOptionLabel={(data, { context }) =>
           context === 'value'
-            ? data.value // 👈 SOLO USD
+            ? <span className="currency-value"><img src={getFlagUrl(data.value)} alt="" />{data.value}</span>
             : data.label // 👈 USD - dólar
         }
       />

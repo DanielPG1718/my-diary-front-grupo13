@@ -105,127 +105,59 @@ export function WeatherWidget() {
   const currentClima = weather?.clima?.[0]
 
   return (
-    <div className="p-6 bg-white rounded-lg border border-gray-200">
-      <div className="flex items-center gap-4 mb-4">
-        <span className="card-list__icon">
-          <UiIcon name="history" />
-        </span>
-        <span className="text-lg font-semibold text-gray-500 uppercase tracking-wide">
-          Clima
-        </span>
-      </div>
-
-      <div className="flex flex-col gap-2 mb-4">
-        <div ref={comboboxRef} className="relative">
-          <input
-            type="text"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60"
-            placeholder={
-              loadingCities ? "Cargando ciudades" : "Buscar ciudad, estado o país"
-            }
-            disabled={loadingCities}
-            value={inputValue}
-            onChange={handleInputChange}
-            onFocus={handleInputFocus}
-            autoComplete="off"
-          />
-
+    <section className="studio-widget weather-widget" aria-labelledby="weather-title">
+      <header className="studio-widget__heading">
+        <span className="studio-widget__icon studio-widget__icon--weather"><UiIcon name="weather" /></span>
+        <h2 id="weather-title">El clima</h2>
+      </header>
+      <div className="weather-search">
+        <label className="studio-field-label" htmlFor="weather-city">¿Dónde estás hoy?</label>
+        <div ref={comboboxRef} className="weather-search__combobox">
+          <input id="weather-city" type="text" className="studio-input"
+            placeholder={loadingCities ? 'Cargando ciudades...' : 'Buscar ciudad, estado o país'}
+            disabled={loadingCities} value={inputValue} onChange={handleInputChange}
+            onFocus={handleInputFocus} autoComplete="off" />
           {isOpen && !loadingCities && (
-            <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-48 overflow-y-auto">
-              {filteredCities.length > 0 ? (
-                filteredCities.map((city) => (
-                  <li
-                    key={city.id}
-                    onMouseDown={() => handleSelectCity(city)}
-                    className="px-3 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-100 select-none"
-                  >
-                    {formatCityLabel(city)}
-                  </li>
-                ))
-              ) : (
-                <li className="px-3 py-2 text-sm text-gray-400 select-none">
-                  No se encontraron ciudades
-                </li>
-              )}
+            <ul className="weather-city-options">
+              {filteredCities.length > 0 ? filteredCities.map((city) => (
+                <li key={city.id} onMouseDown={() => handleSelectCity(city)}>{formatCityLabel(city)}</li>
+              )) : <li className="weather-city-options__empty">No se encontraron ciudades</li>}
             </ul>
           )}
         </div>
-
-        <button
-          className="w-full px-4 py-2 bg-[#4566d9] text-white font-medium rounded-md hover:bg-[#3656c7] transition-colors disabled:opacity-50"
-          disabled={selectedCityId === null || loadingWeather}
-          onClick={() => void handleSearch()}
-        >
-          {loadingWeather ? "Buscando..." : "Buscar"}
+        <button className="workspace-button weather-search__button" aria-label={loadingWeather ? 'Buscando clima' : 'Buscar clima'} title="Buscar clima"
+          disabled={selectedCityId === null || loadingWeather} onClick={() => void handleSearch()}>
+          <UiIcon name="arrow-right" />
         </button>
       </div>
-
-      {error && (
-        <div className="p-3 bg-red-50 rounded-md text-sm text-red-600">{error}</div>
-      )}
-
+      {error && <div className="studio-error" role="alert">{error}</div>}
+      {loadingWeather && <div className="studio-widget__empty" role="status">Consultando el clima...</div>}
       {weather && currentClima && (
-        <div className="mt-2 space-y-4">
-          <div className="flex items-center justify-center gap-4">
-            <div className="flex flex-col items-center gap-2 shrink-0">
-              <div className="w-20 h-20 rounded-full bg-sky-400 flex items-center justify-center shadow-sm">
-                <img
-                  src={new URL(`../icons/${currentClima.icono}.png`, import.meta.url).href}
-                  alt={currentClima.estado}
-                  className="w-12 h-12 object-contain"
-                />
-              </div>
-              <p className="text-sm text-gray-500 font-medium">
-                {capitalize(currentClima.estado)}
-              </p>
+        <div className="weather-result" aria-live="polite">
+          <div className="weather-result__main">
+            <div className="weather-result__illustration">
+              <img src={new URL(`../icons/${currentClima.icono}.png`, import.meta.url).href} alt={currentClima.estado} />
             </div>
-
-            <div>
-              <div>
-                <span className="text-4xl font-bold text-gray-800">
-                  {weather.temperatura}°C
-                </span>
-                <span className="text-base text-gray-400 ml-1.5">
-                  ({weather.sensacion_termica}°C)
-                </span>
-              </div>
-              <p className="text-sm font-semibold text-gray-600 mt-1">
-                {weather.ubicacion}
-              </p>
+            <div className="weather-result__reading">
+              <strong>{weather.temperatura}<span>°C</span></strong>
+              <p>{capitalize(currentClima.estado)}</p>
+              <small>Sensación de {weather.sensacion_termica}°C</small>
             </div>
           </div>
-
-          <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
-            <div className="flex flex-1 flex-col items-center gap-0.5">
-              <span className="text-xs text-gray-400 uppercase tracking-wide">
-                Humedad
-              </span>
-              <span className="text-sm font-semibold text-gray-700">
-                {weather.humedad}%
-              </span>
-            </div>
-
-            <div className="w-px h-8 bg-gray-200" />
-
-            <div className="flex flex-1 flex-col items-center gap-0.5">
-              <span className="text-xs text-gray-400 uppercase tracking-wide">
-                Viento
-              </span>
-              <span className="text-sm font-semibold text-gray-700">
-                {weather.velocidad_viento} km/h
-              </span>
-            </div>
+          <p className="weather-result__location">{weather.ubicacion}</p>
+          <div className="weather-result__details">
+            <div><span className="weather-detail-icon"><UiIcon name="humidity" /></span><span><strong>{weather.humedad}%</strong><small>Humedad</small></span></div>
+            <div><span className="weather-detail-icon"><UiIcon name="wind" /></span><span><strong>{weather.velocidad_viento} km/h</strong><small>Viento</small></span></div>
           </div>
         </div>
       )}
-
       {!weather && !loadingWeather && !error && (
-        <div className="p-3 bg-gray-50 rounded-md text-center">
-          <p className="text-sm text-gray-400">
-            Selecciona una ciudad y pulsa Buscar
-          </p>
+        <div className="studio-widget__empty weather-empty">
+          <span className="weather-empty__sun" aria-hidden="true">☀</span>
+          <strong>Un vistazo al día</strong>
+          <p>Selecciona una ciudad y pulsa la flecha.</p>
         </div>
       )}
-    </div>
+    </section>
   );
 }

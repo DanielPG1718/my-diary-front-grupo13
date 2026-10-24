@@ -1,21 +1,17 @@
 import { type ReactNode } from 'react'
 import { Footer } from '../shared/components/Footer'
 import { Navbar } from '../shared/components/Navbar'
-import { Sidebar } from '../shared/components/Sidebar'
 
-type MainLayoutProps = {
-  children: ReactNode
-}
+type MainLayoutProps = { children: ReactNode }
 
 export function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className="main-layout">
+    <div className="main-layout diary-workspace">
       <Navbar />
-      <div className="main-layout__body">
-        <Sidebar />
+      <div className="workspace-main">
         <main>{children}</main>
+        <Footer />
       </div>
-      <Footer />
     </div>
   )
 }

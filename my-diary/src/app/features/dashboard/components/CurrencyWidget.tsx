@@ -1,3 +1,4 @@
+import { UiIcon } from '../../../shared/components/UiIcon'
 import { useState, useEffect } from 'react'
 import { API_LIMITS } from '../../currency/constants/currency.constants'
 import { currencyService } from '../../currency/services/currency.service'
@@ -59,105 +60,49 @@ export function CurrencyWidget() {
   }
 
   return (
-    <div className="p-6 bg-white rounded-[2rem] shadow-xl shadow-gray-100/50 border border-gray-50">
-
-      {/* TITULO */}
-  {/* TITULO */}
-<div className="flex items-center gap-3 mb-6">
-  <div className="flex items-center justify-center w-7 h-7 rounded-md bg-emerald-50 text-emerald-500">
-    💵
-  </div>
-
-  <h2 className="text-xs font-semibold text-gray-700 tracking-wide">
-    Cambio de moneda
-  </h2>
-</div>
-
-      {/* SELECTS ALINEADOS */}
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div>
-          <label className="text-[10px] font-bold text-gray-300 uppercase ml-1">De</label>
-          <CurrencySelect
-            label=""
-            value={fromCurrency}
-            onChange={setFromCurrency}
-            options={options}
-          />
-        </div>
-        <div>
-          <label className="text-[10px] font-bold text-gray-300 uppercase ml-1">A</label>
-          <CurrencySelect
-            label=""
-            value={toCurrency}
-            onChange={setToCurrency}
-            options={options}
-          />
-        </div>
-      </div>
-
-      {/* INPUT */}
-      <input
-        type="text"
-        value={amount}
-        onChange={(e) => {
-          const value = e.target.value
-          if (!/^\d*\.?\d*$/.test(value)) {
-            setError('Solo números')
-            return
-          }
-          if (Number(value) < API_LIMITS.MIN_AMOUNT && value !== '') {
-            setError(`Mínimo ${API_LIMITS.MIN_AMOUNT}`)
+    <section className="studio-widget currency-widget" aria-labelledby="currency-title">
+      <header className="studio-widget__heading">
+        <span className="studio-widget__icon studio-widget__icon--currency"><UiIcon name="currency" /></span>
+        <h2 id="currency-title">Cambio de moneda</h2>
+      </header>
+      <div className="currency-amount">
+        <label className="studio-field-label" htmlFor="currency-amount">Monto</label>
+        <input id="currency-amount" type="text" inputMode="decimal" value={amount}
+          onChange={(e) => {
+            const value = e.target.value
+            if (!/^\d*\.?\d*$/.test(value)) {
+              setError('Solo números')
+              return
+            }
+            if (Number(value) < API_LIMITS.MIN_AMOUNT && value !== '') {
+              setError(`Mínimo ${API_LIMITS.MIN_AMOUNT}`)
+              setAmount(value)
+              return
+            }
+            setError('')
             setAmount(value)
-            return
-          }
-          setError('')
-          setAmount(value)
-        }}
-        placeholder="Monto"
-        className="w-full px-4 py-4 rounded-2xl border border-gray-50 bg-[#fbfcfc] mb-4 text-lg font-medium outline-none focus:border-[#d1fae5]"
-      />
-
-      {/* ERROR */}
-      {error && <p className="text-red-400 text-xs mb-2 ml-1">{error}</p>}
-
-      {/* BOTÓN: Verde */}
-      <button
-        onClick={handleConvert}
-        className="w-full py-4 rounded-2xl bg-[#6ee7b7] text-white font-bold hover:bg-[#5cd6a5] transition-all shadow-md shadow-emerald-50"
-      >
-        Calcular →
-      </button>
-
-      {/* RESULTADO */}
+          }}
+          placeholder="0.00" className="studio-input currency-amount__input" />
+      </div>
+      <div className="currency-selectors">
+        <CurrencySelect label="De" value={fromCurrency} onChange={setFromCurrency} options={options} />
+        <span className="currency-direction" aria-hidden="true">⇄</span>
+        <CurrencySelect label="A" value={toCurrency} onChange={setToCurrency} options={options} />
+      </div>
+      {error && <p className="studio-error" role="alert">{error}</p>}
       {result !== null && (
-        /* Fondo casi blanco con un toque de verde menta (bg-[#f7fdfb]) */
-        <div className="mt-6 p-6 rounded-[1.5rem] border border-[#ecfdf5] bg-[#f7fdfb] text-center">
-          <p className="text-[10px] text-[#a1cfbe] font-bold tracking-[0.15em] uppercase">
-            MONTO CONVERTIDO
-          </p>
-
-          <p className="text-3xl font-bold text-emerald-400 mt-3 flex items-center justify-center gap-3">
-            <img
-              src={getFlagUrl(toCurrency?.value)}
-              alt={toCurrency?.value}
-              className="w-7 h-5 rounded-sm object-cover opacity-90"
-            />
-            {new Intl.NumberFormat('es-PE', {
-              style: 'currency',
-              currency: toCurrency.value,
-              maximumFractionDigits: 2,
-            }).format(result)}
-          </p>
-
-          <p className="text-[11px] font-semibold text-gray-300 mt-3 uppercase tracking-tighter">
-            {fromCurrency.value} / {toCurrency.value}
-          </p>
-
-          <p className="text-[10px] text-gray-300 mt-1 italic opacity-70">
-            Actualizado: {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-          </p>
+        <div className="currency-result" aria-live="polite">
+          <span>Equivale a</span>
+          <strong><img src={getFlagUrl(toCurrency?.value)} alt={toCurrency?.value} />
+            {new Intl.NumberFormat('es-PE', { style: 'currency', currency: toCurrency.value, maximumFractionDigits: 2 }).format(result)}
+          </strong>
+          <div className="currency-result__meta">
+            <span>{fromCurrency.value} / {toCurrency.value}</span>
+            <span>Actualizado: {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          </div>
         </div>
       )}
-    </div>
+      <button onClick={handleConvert} className="workspace-button currency-convert">Convertir <span aria-hidden="true">⇄</span></button>
+    </section>
   )
 }

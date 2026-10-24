@@ -8,9 +8,9 @@ type NavbarProps = {
 }
 
 const navItems = [
-  { label: 'Home', href: '/', icon: 'home' as const },
+  { label: 'Inicio', href: '/', icon: 'home' as const },
   { label: 'Dashboard', href: '/dashboard', icon: 'dashboard' as const },
-  { label: 'Notas', href: '/diary', icon: 'diary' as const },
+  { label: 'Mis notas', href: '/diary', icon: 'diary' as const },
   { label: 'Perfil', href: '/profile', icon: 'profile' as const },
 ]
 
@@ -50,49 +50,38 @@ export function Navbar({ title = 'Mi Diario' }: NavbarProps) {
   }
 
   return (
-    <header className="navbar">
-      <a className="brand" href="/">
-        <span className="brand__logo">
-          <UiIcon name="logo" />
-        </span>
-        <span>
-          <strong>{title}</strong>
-          <small>Notas, clima, moneda y más</small>
-        </span>
+    <header className="workspace-sidebar">
+      <a className="workspace-brand" href="/">
+        <span className="workspace-brand__icon"><UiIcon name="diary" /></span>
+        <span><strong>{title}</strong><small>Tu espacio personal</small></span>
       </a>
-
-      <nav className="navbar__links" aria-label="Principal">
+      <nav className="workspace-nav" aria-label="Principal">
         {navItems.map((item) => (
-          <a
-            key={item.href}
-            href={item.href}
-            className={`nav-link ${currentPath === item.href ? 'nav-link--active' : ''}`}
-            aria-current={currentPath === item.href ? 'page' : undefined}
-          >
-            <UiIcon name={item.icon} />
-            {item.label}
+          <a key={item.href} href={item.href}
+            className={`workspace-nav__link ${currentPath === item.href ? 'is-active' : ''}`}
+            aria-current={currentPath === item.href ? 'page' : undefined}>
+            <UiIcon name={item.icon} /><span>{item.label}</span>
           </a>
         ))}
       </nav>
+      <a className="workspace-button workspace-sidebar__create" href="/diary/create">
+        <UiIcon name="add" /> Nueva nota
+      </a>
+      <div className="workspace-sidebar__art">
+        <img src="/design/student.png" alt="Ilustración de un chico con su portátil y su diario" />
 
-      <div className="navbar__actions">
+      </div>
+      <div className="workspace-sidebar__account">
         {user ? (
           <>
-            {boardPreview ? (
-              <div className="hidden rounded-full border border-[#c3aee9] bg-[#e1d6f4] px-4 py-2 text-sm font-medium text-[#1e1e69] shadow-sm lg:flex lg:items-center lg:gap-2">
-                <UiIcon name="note" />
-                <span className="max-w-[260px] truncate">Meta: {boardPreview}</span>
-              </div>
-            ) : null}
-            <div className="user-chip">
+            {boardPreview ? <div className="workspace-goal"><UiIcon name="note" /><span>Meta: {boardPreview}</span></div> : null}
+            <a className="workspace-user" href="/profile">
+              <span className="workspace-avatar">{user.firstName?.charAt(0)}{user.lastName?.charAt(0)}</span>
+              <span><strong>{user.firstName} {user.lastName}</strong><small>{user.email || 'Mi perfil personal'}</small></span>
               <UiIcon name="profile" />
-              <span>
-                {user.firstName} {user.lastName}
-              </span>
-            </div>
-            <button type="button" className="ghost-button" onClick={handleLogout}>
-              <UiIcon name="logout" />
-              Logout
+            </a>
+            <button type="button" className="workspace-logout" onClick={handleLogout}>
+              <UiIcon name="logout" /> Cerrar sesión
             </button>
           </>
         ) : null}
